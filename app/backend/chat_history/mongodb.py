@@ -13,10 +13,13 @@ from quart import Blueprint, current_app, jsonify, request
 from config import (
 CONFIG_CHAT_HISTORY_MONGO_ENABLED,
 CONFIG_MONGO_HISTORY_CONTAINER,
-CONFIG_MONGO_HISTORY_CLIENT
+CONFIG_MONGO_HISTORY_CLIENT,
+CONFIG_CREDENTIAL
 )
 from decorators import authenticated
 from error import error_response
+from azure.keyvault.secrets.aio import SecretClient
+from azure.identity.aio import DefaultAzureCredential
 
 chat_history_mongodb_bp = Blueprint("chat_history_mongo", __name__, static_folder="static")
 
@@ -153,7 +156,7 @@ async def delete_chat_history_session(auth_claims: Dict[str, Any], item_id: str)
 @chat_history_mongodb_bp.before_app_serving
 async def setup_clients():
     USE_CHAT_HISTORY_MONGODB = os.getenv("USE_CHAT_HISTORY_MONGO", "").lower() == "true"
-    MONGODB_CONNECTION_STRING = os.getenv("MONGODB_CONNECTION_STRING")
+    MONGODB_CONNECTION_STRING = await read_secret_from_key_vault(os.getenv("KEYVAULT_URI"),os.getenv("MONGODB_CONNECTION_STRING_SECRET_NAME"))
     MONGODB_DB_NAME = os.getenv("MONGODB_DB_NAME")
     MONGODB_COLLECTION_NAME= os.getenv("MONGODB_COLLECTION_NAME")
 
@@ -179,3 +182,12 @@ async def close_clients():
     if current_app.config.get(CONFIG_MONGO_HISTORY_CLIENT):
         mongodb_client: MongoClient = current_app.config[CONFIG_MONGO_HISTORY_CLIENT]
         mongodb_client.close()
+
+
+async def read_secret_from_key_vault(vault_url: str, secret_name: str) -> str:
+    credential: Union[AzureDeveloperCliCredential, ManagedIdentityCredential] = current_app.config[
+        CONFIG_CREDENTIAL
+    ]
+    client = SecretClient(vault_url=vault_url, credential=credential)
+    secret = await client.get_secret(secret_name)
+    return secret.value

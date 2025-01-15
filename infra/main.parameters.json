@@ -311,6 +311,9 @@
     },
     "mongoDbCollectionName": {
       "value": "${MONGODB_COLLECTION_NAME}"
+    },
+    "mongoDbConnectionStringSecretName": {
+       "value": "${MONGODB_CONNECTION_STRING_SECRET_NAME}"
     }
   }
 }

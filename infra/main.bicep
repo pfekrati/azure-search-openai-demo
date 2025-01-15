@@ -262,6 +262,8 @@ param useChatHistoryMongo bool = false
 @secure()
 @description('Connection string of the MongoDB')
 param mongoDbConnectionString string
+@description('Connection string of the MongoDB')
+param mongoDbConnectionStringSecretName string = 'mongodbConnectionString'
 @description('Database name of the MongoDB')
 param mongoDbDatabaseName string
 @description('Collection name of the MongoDB')
@@ -425,10 +427,21 @@ var appEnvVariables = {
   USE_MEDIA_DESCRIBER_AZURE_CU: useMediaDescriberAzureCU
   AZURE_CONTENTUNDERSTANDING_ENDPOINT: useMediaDescriberAzureCU ? contentUnderstanding.outputs.endpoint : ''
   RUNNING_IN_PRODUCTION: 'true'
-  MONGODB_CONNECTION_STRING: mongoDbConnectionString
+  // MONGODB_CONNECTION_STRING: mongoDbConnectionString
+  MONGODB_CONNECTION_STRING_SECRET_NAME: mongoDbConnectionStringSecretName
   MONGODB_DB_NAME : mongoDbDatabaseName
   MONGODB_COLLECTION_NAME : mongoDbCollectionName
   USE_CHAT_HISTORY_MONGO: useChatHistoryMongo
+}
+
+module keyvault 'core/keyVault/keyvault.bicep' = if(useChatHistoryMongo) {
+  name: 'keyvault'
+  scope: resourceGroup
+  params: {
+    keyVaultName: '${abbrs.keyVaults}${resourceToken}'
+    secretName: mongoDbConnectionStringSecretName
+    secretValue: mongoDbConnectionString
+  }
 }
 
 // App Service for the web application (Python Quart app with JS frontend)
@@ -460,6 +473,7 @@ module backend 'core/host/appservice.bicep' = if (deploymentTarget == 'appservic
     appSettings: union(appEnvVariables, {
       AZURE_SERVER_APP_SECRET: serverAppSecret
       AZURE_CLIENT_APP_SECRET: clientAppSecret
+      KEYVAULT_URI: !empty(keyvault.outputs.keyVaultUri)? keyvault.outputs.keyVaultUri : ''
     })
   }
 }
@@ -515,6 +529,7 @@ module acaBackend 'core/host/container-app-upsert.bicep' = if (deploymentTarget 
     env: union(appEnvVariables, {
       // For using managed identity to access Azure resources. See https://github.com/microsoft/azure-container-apps/issues/442
       AZURE_CLIENT_ID: (deploymentTarget == 'containerapps') ? acaIdentity.outputs.clientId : ''
+      KEYVAULT_URI: !empty(keyvault.outputs.keyVaultUri)? keyvault.outputs.keyVaultUri : ''
     })
     secrets: useAuthentication ? {
       azureclientappsecret: clientAppSecret
@@ -785,6 +800,7 @@ module userStorage 'core/storage/storage-account.bicep' = if (useUserUpload) {
   }
 }
 
+
 module cosmosDb 'br/public:avm/res/document-db/database-account:0.6.1' = if (useAuthentication && useChatHistoryCosmos) {
   name: 'cosmosdb'
   scope: cosmosDbResourceGroup
@@ -842,6 +858,10 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.6.1' = if (use
     ]
   }
 }
+
+
+
+
 
 // USER ROLES
 var principalType = empty(runningOnGh) && empty(runningOnAdo) ? 'User' : 'ServicePrincipal'
@@ -1182,6 +1202,19 @@ module documentIntelligenceRoleBackend 'core/security/role.bicep' = if (useUserU
       ? backend.outputs.identityPrincipalId
       : acaBackend.outputs.identityPrincipalId
     roleDefinitionId: 'a97b65f3-24c7-4388-baec-2e87135dc908'
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// For key vault access by the backend - role: Key Vault Secrets User
+module keyvaultRoleBackend 'core/security/role.bicep' = if (useChatHistoryMongo) {
+  scope: documentIntelligenceResourceGroup
+  name: 'keyvault-role-backend'
+  params: {
+    principalId: (deploymentTarget == 'appservice')
+      ? backend.outputs.identityPrincipalId
+      : acaBackend.outputs.identityPrincipalId
+    roleDefinitionId: '4633458b-17de-408a-b874-0445c86b69e6'
     principalType: 'ServicePrincipal'
   }
 }
