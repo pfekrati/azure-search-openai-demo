@@ -139,5 +139,6 @@
   "webSitesContainerApps": "capps-",
   "webSitesAppServiceEnvironment": "ase-",
   "webSitesFunctions": "func-",
-  "webStaticSites": "stapp-"
+  "webStaticSites": "stapp-",
+  "keyVaults": "kv-"
 }
