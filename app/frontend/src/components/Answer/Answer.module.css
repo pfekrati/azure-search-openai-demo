@@ -54,7 +54,7 @@ h2 {
     border-radius: 0.25em;
     padding: 0em 0.5em;
     background: #d1dbfa;
-    color: #e73232;
+    color: #a20a29;
     text-decoration: none;
     cursor: pointer;
 }
@@ -109,7 +109,7 @@ sup {
     height: 0.875em;
     border-radius: 0.1875em;
     background: #d1dbfa;
-    color: #ca2c2c;
+    color: #a20a29;
     text-decoration-color: transparent;
     outline: transparent solid 0.0625em;
     cursor: pointer;

@@ -373,14 +373,14 @@ const Chat = () => {
                 <div className={styles.chatContainer}>
                     {!lastQuestionRef.current ? (
                         <div className={styles.chatEmptyState}>
-                            <SparkleFilled fontSize={"120px"} primaryFill={"rgb(187, 0, 31)"} aria-hidden="true" aria-label="Chat logo" />
+                            <SparkleFilled fontSize={"120px"} primaryFill={"rgb(162, 10, 41)"} aria-hidden="true" aria-label="Chat logo" />
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
                                 <h3 className={styles.chatEmptyStateTitle}>{t("chatEmptyStateTitlePart1")}</h3>
                                 <img
                                     className={styles.logo}
                                     alt="Canada Life's Logo"
                                     title="Canada Life's Logo"
-                                    src="https://upload.wikimedia.org/wikipedia/en/thumb/7/73/The_Canada_Life_Assurance_Company_logo_%28post-amalgamation%29.svg/220px-The_Canada_Life_Assurance_Company_logo_%28post-amalgamation%29.svg.png"
+                                    src="https://www.canadalife.com/content/dam/canadalife/logos/canada-life-e-tm.svg?v=323032332d30382d33303a31303a3134"
                                 />
                                 <h3 className={styles.chatEmptyStateTitle}>{t("chatEmptyStateTitlePart2")}</h3>
                             </div>
