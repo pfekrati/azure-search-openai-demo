@@ -1,8 +1,8 @@
 .questionInputContainer {
     border-radius: 0.5rem;
     box-shadow:
-        0px 0.5rem 1rem rgba(0, 0, 0, 0.14),
-        0px 0px 0.125rem rgba(0, 0, 0, 0.12);
+        0px 0.1rem 1rem #920000,
+        0px 0px 0.125rem #f0c4c4;
     width: 100%;
     padding: 0.8rem;
     background: white;

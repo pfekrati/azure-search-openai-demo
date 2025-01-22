@@ -250,7 +250,7 @@ export function Component(): JSX.Element {
                     {showUserUpload && <UploadFile className={styles.commandButton} disabled={loggedIn} />}
                     <SettingsButton className={styles.commandButton} onClick={() => setIsConfigPanelOpen(!isConfigPanelOpen)} />
                 </div>
-                <h1 className={styles.askTitle}>{t("askTitle")}</h1>
+                <h3 className={styles.askTitle}>{t("askTitle")}</h3>
                 <div className={styles.askQuestionInput}>
                     <QuestionInput
                         placeholder={t("gpt4vExamples.placeholder")}
@@ -262,13 +262,13 @@ export function Component(): JSX.Element {
                 </div>
             </div>
             <div className={styles.askBottomSection}>
-                {isLoading && <Spinner label={t("generatingAnswer")} />}
-                {!lastQuestionRef.current && (
+                {isLoading && <Spinner label={t("generatingAnswer")} styles={{ circle: { borderColor: "red" }, label: { color: "red" } }} />}
+                {/* {!lastQuestionRef.current && (
                     <div className={styles.askTopSection}>
                         {showLanguagePicker && <LanguagePicker onLanguageChange={newLang => i18n.changeLanguage(newLang)} />}
                         <ExampleList onExampleClicked={onExampleClicked} useGPT4V={useGPT4V} />
                     </div>
-                )}
+                )} */}
                 {!isLoading && answer && !error && (
                     <div className={styles.askAnswerContainer}>
                         <Answer
