@@ -23,9 +23,9 @@
 }
 
 .askTitle {
-    font-size: 2.75rem;
-    font-weight: 600;
+    font-size: 2rem;
     margin-top: 0;
+    color: #a20a29;
 }
 
 .askQuestionInput {

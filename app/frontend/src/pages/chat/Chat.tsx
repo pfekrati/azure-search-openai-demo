@@ -373,12 +373,21 @@ const Chat = () => {
                 <div className={styles.chatContainer}>
                     {!lastQuestionRef.current ? (
                         <div className={styles.chatEmptyState}>
-                            <SparkleFilled fontSize={"120px"} primaryFill={"rgba(115, 118, 225, 1)"} aria-hidden="true" aria-label="Chat logo" />
-                            <h1 className={styles.chatEmptyStateTitle}>{t("chatEmptyStateTitle")}</h1>
-                            <h2 className={styles.chatEmptyStateSubtitle}>{t("chatEmptyStateSubtitle")}</h2>
-                            {showLanguagePicker && <LanguagePicker onLanguageChange={newLang => i18n.changeLanguage(newLang)} />}
+                            <SparkleFilled fontSize={"120px"} primaryFill={"rgb(162, 10, 41)"} aria-hidden="true" aria-label="Chat logo" />
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
+                                <h3 className={styles.chatEmptyStateTitle}>{t("chatEmptyStateTitlePart1")}</h3>
+                                <img
+                                    className={styles.logo}
+                                    alt="Canada Life's Logo"
+                                    title="Canada Life's Logo"
+                                    src="https://www.canadalife.com/content/dam/canadalife/logos/canada-life-e-tm.svg?v=323032332d30382d33303a31303a3134"
+                                />
+                                <h3 className={styles.chatEmptyStateTitle}>{t("chatEmptyStateTitlePart2")}</h3>
+                            </div>
+                            {/* <h2 className={styles.chatEmptyStateSubtitle}>{t("chatEmptyStateSubtitle")}</h2> */}
+                            {/* {showLanguagePicker && <LanguagePicker onLanguageChange={newLang => i18n.changeLanguage(newLang)} />} */}
 
-                            <ExampleList onExampleClicked={onExampleClicked} useGPT4V={useGPT4V} />
+                            {/* <ExampleList onExampleClicked={onExampleClicked} useGPT4V={useGPT4V} /> */}
                         </div>
                     ) : (
                         <div className={styles.chatMessageStream}>

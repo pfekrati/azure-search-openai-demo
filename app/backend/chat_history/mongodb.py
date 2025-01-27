@@ -148,7 +148,7 @@ async def delete_chat_history_session(auth_claims: Dict[str, Any], item_id: str)
 
     try:
         container.delete_one({"id": item_id})
-        return jsonify({}), 204
+        return '', 204
     except Exception as error:
         return error_response(error, f"/chat_history/items/{item_id}")
 
